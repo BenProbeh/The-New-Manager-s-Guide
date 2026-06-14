@@ -1,10 +1,38 @@
-import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import NavBar from './NavBar'
 import { APP_TITLE } from '../data/navigation'
 
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
+
+  const closeMenu = () => setMenuOpen(false)
+
+  useEffect(() => {
+    closeMenu()
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return undefined
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        closeMenu()
+      }
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [menuOpen])
 
   return (
     <div className="app-shell">
@@ -15,8 +43,6 @@ export default function Layout() {
         <div className="app-shell__scanline" />
         <div className="app-shell__vignette" />
       </div>
-
-      <NavBar isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <div className="app-shell__main">
         <header className="top-bar">
@@ -38,6 +64,8 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
+
+      <NavBar isOpen={menuOpen} onClose={closeMenu} />
     </div>
   )
 }

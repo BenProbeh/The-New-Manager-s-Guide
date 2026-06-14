@@ -136,6 +136,10 @@ ul {
   isolation: isolate;
 }
 
+.nav-bar {
+  order: 1;
+}
+
 .app-shell__backdrop {
   position: fixed;
   inset: 0;
@@ -212,6 +216,7 @@ ul {
 .app-shell__main {
   position: relative;
   z-index: 1;
+  order: 2;
   flex: 1;
   min-width: 0;
   display: flex;
@@ -420,6 +425,11 @@ ul {
 .nav-bar__item {
   animation: nav-item-enter 0.5s var(--ease-out-expo) both;
   animation-delay: calc(var(--item-index, 0) * 40ms);
+}
+
+.nav-bar--animate-items .nav-bar__item {
+  animation: nav-item-enter 0.45s var(--ease-out-expo) both;
+  animation-delay: calc(var(--item-index, 0) * 35ms);
 }
 
 @keyframes nav-item-enter {
@@ -1632,22 +1642,48 @@ ul {
 /* ─── Mobile ─── */
 
 @media (max-width: 768px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .app-shell__main {
+    order: 1;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .nav-bar {
+    order: 2;
+  }
+
   .top-bar {
     display: flex;
   }
 
   .nav-overlay {
     display: block;
+    z-index: 500;
   }
 
   .nav-bar {
-    position: fixed;
+    position: fixed !important;
     top: 0;
-    inset-inline-end: 0;
-    width: min(340px, 92vw);
-    min-height: 100dvh;
-    transform: translateX(100%);
-    transition: transform var(--duration-normal) var(--ease-out-expo);
+    right: 0;
+    left: auto;
+    bottom: 0;
+    width: min(320px, 88vw);
+    max-width: 88vw;
+    min-height: 0;
+    height: 100dvh;
+    height: 100svh;
+    z-index: 510;
+    flex-shrink: 0;
+    transform: translate3d(100%, 0, 0);
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      transform var(--duration-normal) var(--ease-out-expo),
+      visibility var(--duration-normal) var(--ease-out-expo);
     box-shadow:
       -1px 0 0 rgba(218, 143, 255, 0.2),
       -16px 0 64px rgba(191, 90, 242, 0.15),
@@ -1655,11 +1691,48 @@ ul {
   }
 
   .nav-bar--open {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .nav-bar__close {
     display: flex;
+  }
+
+  .nav-bar__header {
+    padding-top: calc(20px + env(safe-area-inset-top, 0));
+  }
+
+  .nav-bar__menu {
+    flex: 1;
+    min-height: 0;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-bar__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .nav-bar--animate-items .nav-bar__item {
+    animation: nav-item-enter 0.35s var(--ease-out-expo) both;
+    animation-delay: calc(var(--item-index, 0) * 30ms);
+  }
+
+  .nav-bar__link {
+    min-height: 48px;
+  }
+
+  .nav-bar__link-text {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.96rem;
+  }
+
+  .nav-bar__brand-text {
+    font-size: 0.8rem;
   }
 
   .content-area {
@@ -1762,7 +1835,20 @@ ul {
 
 @media (min-width: 769px) {
   .nav-bar {
+    position: relative !important;
     transform: none !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .nav-overlay {
+    display: none !important;
+  }
+
+  .nav-bar__close {
+    display: none !important;
   }
 }
 

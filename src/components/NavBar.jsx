@@ -11,7 +11,7 @@ export default function NavBar({ isOpen, onClose }) {
         aria-hidden="true"
       />
 
-      <aside className={`nav-bar ${isOpen ? 'nav-bar--open' : ''}`} aria-label="תפריט ניווט ראשי">
+      <aside className={`nav-bar ${isOpen ? 'nav-bar--open nav-bar--animate-items' : ''}`} aria-label="תפריט ניווט ראשי">
         <div className="nav-bar__header">
           <NavLink to="/" className="nav-bar__brand" onClick={onClose}>
             <span className="nav-bar__brand-mark" aria-hidden="true">
