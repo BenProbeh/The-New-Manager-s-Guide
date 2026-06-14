@@ -6,7 +6,7 @@ export default function PageCard({ children, className = '', variant = 'default'
       <div className="page-card__halo page-card__halo--c" aria-hidden="true" />
       <div className="page-card__surface">
         <div className="page-card__sheen" aria-hidden="true" />
-        {children}
+        <div className="page-card__content">{children}</div>
       </div>
     </div>
   )
