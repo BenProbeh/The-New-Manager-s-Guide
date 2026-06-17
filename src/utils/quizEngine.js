@@ -1,4 +1,8 @@
-import { QUIZ_QUESTION_POOL, QUIZ_QUESTIONS_PER_ROUND } from '../data/quizQuestions'
+import {
+  QUIZ_PRIORITY_PICKS,
+  QUIZ_QUESTION_POOL,
+  QUIZ_QUESTIONS_PER_ROUND,
+} from '../data/quizQuestions'
 
 function shuffleArray(items) {
   const copy = [...items]
@@ -9,25 +13,53 @@ function shuffleArray(items) {
   return copy
 }
 
+function pickFromSection(section, count, excludeIds = new Set()) {
+  const pool = shuffleArray(
+    QUIZ_QUESTION_POOL.filter((q) => q.section === section && !excludeIds.has(q.id)),
+  )
+  return pool.slice(0, count)
+}
+
+function prepareQuestion(question) {
+  const indexedOptions = question.options.map((text, index) => ({
+    text,
+    originalIndex: index,
+  }))
+  const shuffled = shuffleArray(indexedOptions)
+
+  return {
+    id: question.id,
+    section: question.section,
+    question: question.question,
+    explanation: question.explanation,
+    options: shuffled.map((item) => item.text),
+    correctIndex: shuffled.findIndex((item) => item.originalIndex === question.correctIndex),
+  }
+}
+
 export function buildQuizRound(count = QUIZ_QUESTIONS_PER_ROUND) {
-  const picked = shuffleArray(QUIZ_QUESTION_POOL).slice(0, count)
+  const usedIds = new Set()
+  const picked = []
 
-  return picked.map((question) => {
-    const indexedOptions = question.options.map((text, index) => ({
-      text,
-      originalIndex: index,
-    }))
-    const shuffled = shuffleArray(indexedOptions)
-
-    return {
-      id: question.id,
-      section: question.section,
-      question: question.question,
-      explanation: question.explanation,
-      options: shuffled.map((item) => item.text),
-      correctIndex: shuffled.findIndex((item) => item.originalIndex === question.correctIndex),
-    }
+  Object.entries(QUIZ_PRIORITY_PICKS).forEach(([section, sectionCount]) => {
+    const fromSection = pickFromSection(section, sectionCount, usedIds)
+    fromSection.forEach((q) => {
+      usedIds.add(q.id)
+      picked.push(q)
+    })
   })
+
+  const priorityTotal = Object.values(QUIZ_PRIORITY_PICKS).reduce((sum, n) => sum + n, 0)
+  const remaining = count - priorityTotal
+
+  if (remaining > 0) {
+    const others = shuffleArray(
+      QUIZ_QUESTION_POOL.filter((q) => !usedIds.has(q.id) && !QUIZ_PRIORITY_PICKS[q.section]),
+    ).slice(0, remaining)
+    others.forEach((q) => picked.push(q))
+  }
+
+  return shuffleArray(picked).map(prepareQuestion)
 }
 
 export function gradeQuiz(questions, answers) {
@@ -55,9 +87,9 @@ export function gradeQuiz(questions, answers) {
 }
 
 export function getScoreMessage(percent) {
-  if (percent === 100) return 'מושלם! את מכירה את המדריך כמו כף היד.'
-  if (percent >= 90) return 'מצוין! את מוכנה לנהל את הסניף ברמה גבוהה.'
-  if (percent >= 75) return 'יפה מאוד — יש בסיס חזק, כדאי לחזור על הנקודות שפספסת.'
-  if (percent >= 60) return 'לא רע — מומלץ לעבור שוב על הדפים הרלוונטיים.'
-  return 'כדאי לקרוא שוב את המדריך ולנסות מבחן חדש.'
+  if (percent === 100) return 'מושלם! שליטה מלאה בנושאים הקריטיים.'
+  if (percent >= 90) return 'מצוין! את מוכנה לנהל שימועים, משכורות ודוחות ברמה גבוהה.'
+  if (percent >= 75) return 'יפה מאוד — חזרי על פיטורים, משכורות ודוחות בנקודות שפספסת.'
+  if (percent >= 60) return 'בסיס סביר — מומלץ לעבור שוב על דפי השימוע, המשכורות והדוחות.'
+  return 'כדאי ללמוד לעומק את נושאי השימוע, המשכורות והדוחות ולנסות שוב.'
 }

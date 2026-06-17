@@ -62,14 +62,22 @@ export default function QuizPage() {
             <header className="page-header page-header--section">
               <h1 className="page-header__title page-header__title--section">מבחן</h1>
               <p className="page-header__subtitle page-header__subtitle--section">
-                מבחן אמריקאי על כל התוכן במדריך — {QUIZ_QUESTIONS_PER_ROUND} שאלות אקראיות בכל
-                סיבוב, עם ציון, סיכום טעויות והסברים.
+                מבחן אמריקאי מתקדם — {QUIZ_QUESTIONS_PER_ROUND} שאלות בכל סיבוב, עם דגש על שימוע
+                ופיטורים, משכורות ודוחות.
               </p>
             </header>
             <ul className="quiz-intro__list">
-              <li>שאלות מכל הדפים: פלור, משלוחים, אחמשים, מטבח, משכורות ועוד</li>
-              <li>בסיום — ציון באחוזים ופירוט מה טעית ומה התשובה הנכונה</li>
-              <li>אפשר להתחיל מבחן חדש עם שאלות אחרות</li>
+              <li>
+                <strong>4 שאלות</strong> על שימוע ופיטורים — תהליכים, מועדים ותיעוד משפטי
+              </li>
+              <li>
+                <strong>3 שאלות</strong> על משכורות — שיפט, אקסל ובלת"מים
+              </li>
+              <li>
+                <strong>3 שאלות</strong> על דוחות — Food Cost ו-Labor Cost
+              </li>
+              <li>שאלות תרחיש ומלכודות — לא רק זיכוי עובדות</li>
+              <li>בסיום: ציון, פירוט טעויות, והסבר לכל תשובה שגויה</li>
             </ul>
             <button type="button" className="quiz-btn quiz-btn--primary" onClick={startQuiz}>
               התחלת מבחן
