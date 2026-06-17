@@ -11,5 +11,6 @@ export const NAV_ITEMS = [
   { id: 'operations', label: 'תפעול', path: '/operations' },
   { id: 'bootstrap', label: 'ביוטסט', path: '/bootstrap' },
   { id: 'suppliers', label: 'ספקים חשובים', path: '/suppliers' },
+  { id: 'quiz', label: 'מבחן', path: '/quiz' },
   { id: 'drafts', label: 'טיוטות', path: '/drafts' },
 ]

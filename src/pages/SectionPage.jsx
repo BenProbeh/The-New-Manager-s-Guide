@@ -6,7 +6,7 @@ import { NAV_ITEMS } from '../data/navigation'
 export default function SectionPage() {
   const location = useLocation()
   const section = NAV_ITEMS.find(
-    (item) => item.path === location.pathname && item.id !== 'drafts',
+    (item) => item.path === location.pathname && !['drafts', 'quiz'].includes(item.id),
   )
 
   if (!section) {
